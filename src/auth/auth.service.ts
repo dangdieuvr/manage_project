@@ -18,7 +18,8 @@ export class AuthService{
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          hash
+          hash,
+          premission:"admin"
         },
       });
       delete user.hash;

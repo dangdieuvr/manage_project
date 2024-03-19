@@ -17,7 +17,8 @@ model User {
 
   email String @unique
   hash  String
-
+  premission String
+  
   firstName String?
   lastName  String?
   
