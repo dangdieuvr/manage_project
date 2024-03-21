@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import {User} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
@@ -8,6 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 @Injectable({})
 export class AuthService{
+  getLoggedInUserInfo(token: any) {
+      throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService,
               private jwt: JwtService,
               private config: ConfigService
@@ -75,6 +78,15 @@ export class AuthService{
     return {
       access_token: token,
     };
+  }
+
+  async getUserFromToken(token: string): Promise<any> {
+    try {
+      const decodedToken = await this.jwt.verifyAsync(token);
+      return decodedToken;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 
 }

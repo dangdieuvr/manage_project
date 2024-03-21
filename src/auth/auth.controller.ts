@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, ParseIntPipe, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus,Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
@@ -15,5 +15,13 @@ export class AuthController{
   @Post('signin')
   singin(@Body() dto:AuthDto){
     return this.authService.signin(dto);
+  }
+  @Post('verify-token')
+  async verifyToken(@Body('token') accessToken: string): Promise<any> {
+    const user = await this.authService.getUserFromToken(accessToken);
+    if (!user) {
+      throw new UnauthorizedException('Invalid token');
+    }
+    return user;
   }
 }  
